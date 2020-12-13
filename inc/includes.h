@@ -4,11 +4,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stddef.h>
-#include <sys/socket.h>
-#include <sys/un.h>
-#include <sys/epoll.h>
-#include <unistd.h>
+#include <fcntl.h>
+#include <sys/errno.h>
 
-#include "socket.h"
+#include "unix_socket.h"
+#include "listen_mode.h"
 
 #endif

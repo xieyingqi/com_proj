@@ -1,33 +1,54 @@
 #include "includes.h"
 
-UNIX_SOCKET_T gServer, gClient;
-int gAcceptFd;
+UNIX_SOCKET_T gServer;
+EP_LISTEN_T gEvent;
+
+void cbSocketRead(int epfd, struct epoll_event ev)
+{
+	char buf[50];
+
+	if (ev.events & EPOLLIN)
+	{
+		read(ev.data.fd, buf, sizeof(buf));
+		printf("socket read:%s \n", buf);
+	}
+}
+
+void cbSocketAdd(int epfd, struct epoll_event ev)
+{
+	int fd;
+	UNIX_SOCKET_T client;
+
+	//if (ev.data.fd == gServer.fd) //如果有客户端连接
+	{
+		printf("new client connected, fd:%d \n", ev.data.fd);
+		client.len = sizeof(client.addr);
+		fd = accept(gServer.fd, (struct sockaddr *)&client.addr, &(client.len));
+		epollAddEvent(&gEvent, fd, cbSocketRead); //将连接的客户端添加至epoll监听
+	}
+}
 
 int main(int argc, char const *argv[])
 {
-	char buf[50];
-	// int epollFd;
-	// struct epoll_event ep_event;
-
-	gAcceptFd = createUnixSocketServer(&gServer, &gClient);
-	if (gAcceptFd < 0)
+	/* 创建本地套接字服务端 */
+	if (createUnixSocketServer(&gServer) < 0)
 	{
-		perror("create unix socket failed!");
-		close(gAcceptFd);
-		close(gServer.fd);
-		close(gClient.fd);
+		deleteUnixSocket(&gServer);
 		return 0;
 	}
 	
-	// epollFd = epoll_create1(0);
-	// ep_event.data.fd = gAcceptFd;
-	// ep_event.events = EPOLLIN;
-	// epoll_ctl(epollFd, EPOLL_CTL_ADD, gAcceptFd, &ep_event);
-	// epoll_wait(epollFd, &ep_event, SOCKET_MAX_CON, 500);
+	/* 创建epoll监听事件 */
+	if (epollCreate(&gEvent) < 0)
+	{
+		epollDesrory(&gEvent);
+		return 0;
+	}
 
-	read(gAcceptFd, buf, sizeof(buf));
-	printf("receive: %s \n", buf);
+	epollAddEvent(&gEvent, gServer.fd, cbSocketAdd);
+	epollListenLoop(&gEvent);
 
-	close(gAcceptFd);
+	deleteUnixSocket(&gServer);
+	epollDesrory(&gEvent);
+
 	return 0;
 }
