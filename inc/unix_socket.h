@@ -8,8 +8,10 @@
 #include <sys/un.h>
 #include <unistd.h>
 
-#define SOCKET_PATH "/tmp/socket.unix"
-#define SOCKET_MAX_CON 10
+#include "epoll_user.h"
+
+#define SOCKET_PATH "/tmp/%s.unix"
+#define SOCKET_MAX 10
 
 typedef struct
 {
@@ -18,8 +20,19 @@ typedef struct
 	struct sockaddr_un addr;
 } UNIX_SOCKET_T;
 
-extern int createUnixSocketServer(UNIX_SOCKET_T *server);
-extern int createUnixSocketClient(UNIX_SOCKET_T *client);
-extern void deleteUnixSocket(UNIX_SOCKET_T *socket_t);
+typedef struct
+{
+	UNIX_SOCKET_T sock;
+	EP_LISTEN_T ep;
+} SOCKET_IPC_T;
+
+typedef struct
+{
+	char buf[1024];
+} IPC_MSG_T;
+
+extern int creatIpc(SOCKET_IPC_T *ipc, const char* id);
+extern int sendIpc(SOCKET_IPC_T *ipc, const char* id, IPC_MSG_T data);
+extern int recvIpc(SOCKET_IPC_T *ipc, const char* id, IPC_MSG_T *data, int timeOutMs);
 
 #endif

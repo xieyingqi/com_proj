@@ -1,4 +1,4 @@
-#include "listen_mode.h"
+#include "epoll_user.h"
 
 /**
  * @brief 创建并初始化epoll监听文件
@@ -78,7 +78,7 @@ void epollListenLoop(EP_LISTEN_T *fdEvent)
 
 	while (1)
 	{
-		fds = epoll_wait(fdEvent->epfd, listenEvents, MAX_LISTEN, -1);
+		fds = epoll_wait(fdEvent->epfd, listenEvents, MAX_LISTEN, 0);
 		printf("fds = %d\n", fds);
 		for (i = 0; i < fds; i++)
 		{
