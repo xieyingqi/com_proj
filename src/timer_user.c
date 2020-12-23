@@ -1,7 +1,7 @@
 #include "timer_user.h"
 
 /**
- * @brief 添加定时器
+ * @brief 添加定时器s
  * @param timer  定时器结构体
  * @param gap    周期
  * @param cbFunc 回调函数
@@ -9,15 +9,41 @@
  */
 int addTimer(TIMER_STRU_T *timer, int gap, cb_timerFunc cbFunc)
 {
-	struct sigevent ev;
-
-	timer->gap = gap;
+	timer->s_gap = gap;
+	timer->ms_gap = 0;
 	timer->cbFunc = cbFunc;
 
-	ev.sigev_value.sival_ptr = &timer->id;
-	ev.sigev_notify = SIGEV_THREAD;
-	ev.sigev_notify_function = timer->cbFunc;
-	if(timer_create(CLOCK_REALTIME, &ev, &timer->id) < 0)
+	timer->ev.sigev_value.sival_ptr = &timer->id;
+	timer->ev.sigev_notify = SIGEV_THREAD;
+	timer->ev.sigev_notify_function = timer->cbFunc;
+
+	if(timer_create(CLOCK_REALTIME, &timer->ev, &timer->id) < 0)
+	{
+		perror("timer create error!\n");
+		return -1;
+	}
+
+	return 0;
+}
+
+/**
+ * @brief 添加定时器ms
+ * @param timer  定时器结构体
+ * @param gap    周期
+ * @param cbFunc 回调函数
+ * @return 0:成功 -1:失败
+ */
+int addTimerMs(TIMER_STRU_T *timer, int gap, cb_timerFunc cbFunc)
+{
+	timer->s_gap = 0;
+	timer->ms_gap = gap;
+	timer->cbFunc = cbFunc;
+
+	timer->ev.sigev_value.sival_ptr = &timer->id;
+	timer->ev.sigev_notify = SIGEV_THREAD;
+	timer->ev.sigev_notify_function = timer->cbFunc;
+
+	if(timer_create(CLOCK_REALTIME, &timer->ev, &timer->id) < 0)
 	{
 		perror("timer create error!\n");
 		return -1;
@@ -33,16 +59,30 @@ int addTimer(TIMER_STRU_T *timer, int gap, cb_timerFunc cbFunc)
  */
 int startTimer(TIMER_STRU_T *timer)
 {
-	struct itimerspec ts;
+	timer->ts.it_interval.tv_sec = timer->s_gap;
+	timer->ts.it_interval.tv_nsec = timer->ms_gap * 1000 * 1000;
+	timer->ts.it_value.tv_sec = timer->s_gap;
+	timer->ts.it_value.tv_nsec = timer->ms_gap * 1000 * 1000;
 
-	ts.it_interval.tv_sec = timer->gap;
-	ts.it_interval.tv_nsec = 0;
-	ts.it_value.tv_sec = 0;
-	ts.it_value.tv_nsec = 0;
-
-	if(timer_settime(timer->id, 0, &ts, NULL) < 0)
+	if(timer_settime(timer->id, 0, &timer->ts, NULL) < 0)
 	{
 		perror("timer start error!\n");
+		return -1;
+	}
+	
+	return 0;
+}
+
+/**
+ * @brief 删除定时器
+ * @param timer 定时器结构体
+ * @return 0:成功 -1:失败
+ */
+int delTimer(TIMER_STRU_T *timer)
+{
+	if(timer_delete(timer->id) < 0)
+	{
+		perror("timer del error!\n");
 		return -1;
 	}
 	

@@ -14,7 +14,7 @@ int epollCreate(EP_LISTEN_T *fdEvent)
 		perror("create epoll");
 		return -1;
 	}
-	printf("create epfd:%d \n", fdEvent->epfd);
+	//printf("create epfd:%d \n", fdEvent->epfd);
 
 	return 0;	
 }
@@ -56,7 +56,7 @@ int epollAddEvent(EP_LISTEN_T *fdEvent, int listenFd, cb_listenEvent cbFunc)
 		fdEvent->event[fdEvent->cnt].cbFunc = cbFunc;
 		fdEvent->cnt++;
 
-		printf("add listenfd:%d to epfd:%d total:%d \n", listenFd, fdEvent->epfd, fdEvent->cnt);
+		//printf("add listenfd:%d to epfd:%d total:%d \n", listenFd, fdEvent->epfd, fdEvent->cnt);
 	}
 	else
 	{
@@ -79,7 +79,7 @@ void epollListenLoop(EP_LISTEN_T *fdEvent)
 	while (1)
 	{
 		fds = epoll_wait(fdEvent->epfd, listenEvents, MAX_LISTEN, 0);
-		printf("fds = %d\n", fds);
+		//printf("fds = %d\n", fds);
 		for (i = 0; i < fds; i++)
 		{
 			for (j = 0; j < MAX_LISTEN; j++)

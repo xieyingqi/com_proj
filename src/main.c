@@ -1,42 +1,39 @@
 #include "includes.h"
 
-SOCKET_IPC_T ipc;
-IPC_MSG_T msg;
+EP_LISTEN_T gMainLoop;
+SOCKET_IPC_T gIpc;
+TIMER_STRU_T gTimer;
+CMD_LIST_T cmdList;
+
+CMD_PARA_T cmdParaList[] = 
+{
+	{"id",   TYPE_TEXT, cmdList.id},
+	{"type", TYPE_INT,  &cmdList.type}
+};
 
 void cbTimer(sigval_t i)
 {
-	//sendIpc(&ipc, "recv", msg);
-	printf("run to here1\n");
+	// IPC_MSG_T send_msg, recv_msg;
+	// strcpy(send_msg.buf, "hello");
+	// sendIpc(&gIpc, "recv", send_msg);
+
+	// recvIpc(&gIpc, "send", &recv_msg, 0);
+	printf("id=%s\n", cmdList.id);
+	printf("type=%d\n", cmdList.type);
 }
 
-int main(int argc, char const *argv[])
+int main(int argc, char *argv[])
 {
-	TIMER_STRU_T tim;
+	analyCmdPara(argc, argv, cmdParaList, sizeof(cmdParaList) / sizeof(CMD_PARA_T));
 
-	strcpy(msg.buf, "hello");
-	creatIpc(&ipc, "send");
+	epollCreate(&gMainLoop);
+
+	creatIpc(&gIpc, cmdParaList[0].value);
 	
-	// addTimer(&tim, 1, cbTimer);
-	// startTimer(&tim);
-
-	struct sigevent ev;
-	timer_t id;
-
-	ev.sigev_value.sival_ptr = &id;
-	ev.sigev_notify = SIGEV_THREAD;
-	ev.sigev_notify_function = cbTimer;
-	if(timer_create(CLOCK_REALTIME, &ev, &id) < 0)
-	{
-		perror("timer create error!\n");
-		return 0;
-	}
-
-	while (1)
-	{
-		// sendIpc(&ipc, "recv", msg);
-		// sleep(2);
-	}
+	addTimer(&gTimer, 1, cbTimer);
+	startTimer(&gTimer);
 	
+	epollListenLoop(&gMainLoop);
 
 	return 0;
 }
