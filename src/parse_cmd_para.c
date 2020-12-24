@@ -1,11 +1,11 @@
-#include "cmd_para_analy.h"
+#include "parse_cmd_para.h"
 
 /**
  * @brief 解析命令行参数
  * @param cmdList 命令行参数列表
  * @param cmdCnt  命令行参数个数
  */
-void analyCmdPara(int argc, char *argv[], CMD_PARA_T *cmdList, int cmdCnt)
+void parseCmdPara(int argc, char *argv[], CMD_PARA_T *cmdList, int cmdCnt)
 {
 	int i, c, paraIndex;
 	struct option longOpts[cmdCnt + 1];

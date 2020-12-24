@@ -1,5 +1,5 @@
-#ifndef _CMD_PARA_ANALY_H_
-#define _CMD_PARA_ANALY_H_
+#ifndef _CMD_PARSE_PARA_H_
+#define _CMD_PARSE_PARA_H_
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -29,6 +29,6 @@ typedef struct
 	void *value;           //参数值
 } CMD_PARA_T;
 
-extern void analyCmdPara(int argc, char *argv[], CMD_PARA_T *cmdList, int cmdCnt);
+extern void parseCmdPara(int argc, char *argv[], CMD_PARA_T *cmdList, int cmdCnt);
 
 #endif

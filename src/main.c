@@ -13,24 +13,36 @@ CMD_PARA_T cmdParaList[] =
 
 void cbTimer(sigval_t i)
 {
-	// IPC_MSG_T send_msg, recv_msg;
-	// strcpy(send_msg.buf, "hello");
-	// sendIpc(&gIpc, "recv", send_msg);
+	IPC_MSG_T send_msg;
+	
+	strcpy(send_msg.buf, "hello");
 
-	// recvIpc(&gIpc, "send", &recv_msg, 0);
-	printf("id=%s\n", cmdList.id);
-	printf("type=%d\n", cmdList.type);
+	if(strcmp(cmdList.id, "recv") != 0)
+	{
+		sendIpc(&gIpc, "recv", send_msg);
+	}
+
+	//IPC_MSG_T recv_msg;
+	//recvIpcSync(&gIpc, cmdList.id, &recv_msg, 0);
+}
+
+void cbSock(IPC_MSG_T *msg)
+{
+	printf("rcv %d data from:%s msg:%s\n", msg->cnt, msg->id, msg->buf);
 }
 
 int main(int argc, char *argv[])
 {
-	analyCmdPara(argc, argv, cmdParaList, sizeof(cmdParaList) / sizeof(CMD_PARA_T));
+	parseCmdPara(argc, argv, cmdParaList, sizeof(cmdParaList) / sizeof(CMD_PARA_T));
 
 	epollCreate(&gMainLoop);
 
-	creatIpc(&gIpc, cmdParaList[0].value);
+	creatIpc(&gMainLoop, &gIpc, cmdList.id);
+	
+	setIpcCallBack(&gIpc, cbSock);
 	
 	addTimer(&gTimer, 1, cbTimer);
+	
 	startTimer(&gTimer);
 	
 	epollListenLoop(&gMainLoop);

@@ -14,7 +14,7 @@ int epollCreate(EP_LISTEN_T *fdEvent)
 		perror("create epoll");
 		return -1;
 	}
-	//printf("create epfd:%d \n", fdEvent->epfd);
+	printf("create epfd:%d \n", fdEvent->epfd);
 
 	return 0;	
 }
@@ -35,7 +35,7 @@ void epollDesrory(EP_LISTEN_T *fdEvent)
  * @param listenFd 要添加的需要监听的文件
  * @return 0:成功 -1:失败
  */
-int epollAddEvent(EP_LISTEN_T *fdEvent, int listenFd, cb_listenEvent cbFunc)
+int epollAddEvent(EP_LISTEN_T *fdEvent, int listenFd, cb_listenEvent cbFunc, void *cbArg)
 {
 	int ret;
 	struct epoll_event event;
@@ -54,9 +54,10 @@ int epollAddEvent(EP_LISTEN_T *fdEvent, int listenFd, cb_listenEvent cbFunc)
 	{
 		fdEvent->event[fdEvent->cnt].fd = listenFd;
 		fdEvent->event[fdEvent->cnt].cbFunc = cbFunc;
-		fdEvent->cnt++;
+		fdEvent->event[fdEvent->cnt].cbArg = cbArg;
+		fdEvent->cnt++;		
 
-		//printf("add listenfd:%d to epfd:%d total:%d \n", listenFd, fdEvent->epfd, fdEvent->cnt);
+		printf("add listenfd:%d to epfd:%d total:%d \n", listenFd, fdEvent->epfd, fdEvent->cnt);
 	}
 	else
 	{
@@ -78,7 +79,7 @@ void epollListenLoop(EP_LISTEN_T *fdEvent)
 
 	while (1)
 	{
-		fds = epoll_wait(fdEvent->epfd, listenEvents, MAX_LISTEN, 0);
+		fds = epoll_wait(fdEvent->epfd, listenEvents, MAX_LISTEN, -1);
 		//printf("fds = %d\n", fds);
 		for (i = 0; i < fds; i++)
 		{
@@ -88,7 +89,7 @@ void epollListenLoop(EP_LISTEN_T *fdEvent)
 				{
 					if (*fdEvent->event[j].cbFunc != NULL)
 					{
-						(*fdEvent->event[j].cbFunc)(fdEvent->event[j].fd, listenEvents[i]);
+						(*fdEvent->event[j].cbFunc)(fdEvent->event[j].fd, listenEvents[i], fdEvent->event[j].cbArg);
 					}
 					break;
 				}

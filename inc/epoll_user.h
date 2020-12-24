@@ -11,11 +11,12 @@
 
 #define MAX_LISTEN 10
 
-typedef void (* cb_listenEvent)(int epfd, struct epoll_event ev);
+typedef void (* cb_listenEvent)(int epfd, struct epoll_event ev, void *arg);
 typedef struct
 {
 	int fd;				   //要监听的文件描述符
 	cb_listenEvent cbFunc; //事件发生时的回调函数
+	void *cbArg;           //回调函数的参数
 } FD_EVENT_T;
 
 typedef struct
@@ -27,7 +28,7 @@ typedef struct
 
 extern int epollCreate(EP_LISTEN_T *fdEvent);
 extern void epollDesrory(EP_LISTEN_T *fdEvent);
-extern int epollAddEvent(EP_LISTEN_T *fdEvent, int listenFd, cb_listenEvent cbFunc);
+extern int epollAddEvent(EP_LISTEN_T *fdEvent, int listenFd, cb_listenEvent cbFunc, void *arg);
 extern void epollListenLoop(EP_LISTEN_T *fdEvent);
 
 #endif
