@@ -10,6 +10,7 @@
 
 #include "epoll_user.h"
 #include "parse_cmd_para.h"
+#include "log_printf.h"
 
 #define SOCKET_PATH "/tmp/%s.unix"
 #define SOCKET_MAX 10

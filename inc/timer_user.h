@@ -11,6 +11,8 @@
 #include <time.h>
 #include <signal.h>
 
+#include "log_printf.h"
+
 enum TIMER_MODE
 {
 	eTIM_ONCE,

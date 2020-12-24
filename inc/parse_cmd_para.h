@@ -9,6 +9,8 @@
 #include <unistd.h>
 #include <getopt.h>
 
+#include "log_printf.h"
+
 enum PARA_TYPE_E
 {
 	TYPE_INT,
@@ -19,6 +21,7 @@ enum PARA_TYPE_E
 typedef struct
 {
 	char id[MAX_CMD_LEN];
+	char log_level[MAX_CMD_LEN];
 	int type;
 } CMD_LIST_T;
 

@@ -14,7 +14,7 @@ static int createUnixSocket(UNIX_SOCKET_T *sock, const char* path)
 		perror("socket error!");
 		return -1;
 	}
-	printf("create socket fd:%d \n", sock->fd);
+	logPrintf("create socket fd:%d", sock->fd);
 
 	/* 结构体初始化 */
 	bzero(&sock->addr, sizeof(sock->addr));
@@ -85,7 +85,7 @@ int sendIpc(SOCKET_IPC_T *ipc, const char* id, IPC_MSG_T data)
 	sock.len = sizeof(sock.addr);
 
 	sendto(ipc->sock.fd, data.buf, sizeof(data.buf), 0, (struct sockaddr *)&sock.addr, sock.len);
-	printf("ipc send to %s: %s\n", id, data.buf);
+	logPrintf("ipc send to %s: %s", id, data.buf);
 
 	return 0;
 }
@@ -114,7 +114,7 @@ int recvIpcSync(SOCKET_IPC_T *ipc, const char* id, IPC_MSG_T *data, int timeOutM
 			{
 				sock.len = sizeof(sock.addr);
 				rd = recvfrom(ipc->ep->event[j].fd, data->buf, sizeof(data->buf), 0, (struct sockaddr *)&sock.addr, &sock.len);
-				printf("ipc recv from %s: %s\n", id, data->buf);
+				logPrintf("ipc recv from %s: %s", id, data->buf);
 				break;
 			}
 		}
@@ -134,7 +134,7 @@ static void cbRecvIpcMsg(int epfd, struct epoll_event ev, void *arg)
 
 	sock.len = sizeof(sock.addr);
 	ipc->recvMsg.cnt = recvfrom(ipc->ep->event->fd, ipc->recvMsg.buf, sizeof(ipc->recvMsg.buf), 0, (struct sockaddr *)&sock.addr, &sock.len);
-	printf("ipc recv from %s: %s\n", ipc->recvMsg.id, ipc->recvMsg.buf);
+	logPrintf("ipc recv from %s: %s", ipc->recvMsg.id, ipc->recvMsg.buf);
 
 	ipc->cbArg = (void *)&ipc->recvMsg;
 	if(*ipc->cbFunc != NULL)

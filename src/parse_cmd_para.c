@@ -33,8 +33,7 @@ void parseCmdPara(int argc, char *argv[], CMD_PARA_T *cmdList, int cmdCnt)
 				strcpy(cmdList[paraIndex].value, optarg);
 			}
 			
-			
-			//printf("%s value is %s\n", cmdList[paraIndex].name, cmdList[paraIndex].value);
+			logPrintf("%s value is %s", cmdList[paraIndex].name, cmdList[paraIndex].value);
 		}
 	}
 }

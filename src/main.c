@@ -2,16 +2,17 @@
 
 EP_LISTEN_T gMainLoop;
 SOCKET_IPC_T gIpc;
-TIMER_STRU_T gTimer;
+TIMER_STRU_T gTimer1, gTimer2;
 CMD_LIST_T cmdList;
 
 CMD_PARA_T cmdParaList[] = 
 {
-	{"id",   TYPE_TEXT, cmdList.id},
-	{"type", TYPE_INT,  &cmdList.type}
+	{"id",        TYPE_TEXT, cmdList.id},
+	{"log_level", TYPE_TEXT, cmdList.log_level},
+	{"type",      TYPE_INT,  &cmdList.type},
 };
 
-void cbTimer(sigval_t i)
+void cbTimer1(sigval_t i)
 {
 	IPC_MSG_T send_msg;
 	
@@ -21,29 +22,33 @@ void cbTimer(sigval_t i)
 	{
 		sendIpc(&gIpc, "recv", send_msg);
 	}
+}
 
-	//IPC_MSG_T recv_msg;
-	//recvIpcSync(&gIpc, cmdList.id, &recv_msg, 0);
+void cbTimer2(sigval_t i)
+{
+	logPrintf("timer2");
 }
 
 void cbSock(IPC_MSG_T *msg)
 {
-	printf("rcv %d data from:%s msg:%s\n", msg->cnt, msg->id, msg->buf);
+	logPrintf("rcv %d data from:%s msg:%s", msg->cnt, msg->id, msg->buf);
 }
 
 int main(int argc, char *argv[])
 {
 	parseCmdPara(argc, argv, cmdParaList, sizeof(cmdParaList) / sizeof(CMD_PARA_T));
-
+	setLogLevel(cmdList.log_level);
+	
 	epollCreate(&gMainLoop);
 
 	creatIpc(&gMainLoop, &gIpc, cmdList.id);
-	
 	setIpcCallBack(&gIpc, cbSock);
 	
-	addTimer(&gTimer, 1, cbTimer);
-	
-	startTimer(&gTimer);
+	addTimer(&gTimer1, 1, cbTimer1);
+	startTimer(&gTimer1);
+
+	addTimer(&gTimer2, 5, cbTimer2);
+	startTimer(&gTimer2);
 	
 	epollListenLoop(&gMainLoop);
 

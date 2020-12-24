@@ -11,5 +11,6 @@
 #include "epoll_user.h"
 #include "timer_user.h"
 #include "parse_cmd_para.h"
+#include "log_printf.h"
 
 #endif

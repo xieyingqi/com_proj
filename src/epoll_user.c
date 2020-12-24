@@ -14,7 +14,7 @@ int epollCreate(EP_LISTEN_T *fdEvent)
 		perror("create epoll");
 		return -1;
 	}
-	printf("create epfd:%d \n", fdEvent->epfd);
+	logPrintf("create epfd:%d", fdEvent->epfd);
 
 	return 0;	
 }
@@ -25,7 +25,7 @@ int epollCreate(EP_LISTEN_T *fdEvent)
  */
 void epollDesrory(EP_LISTEN_T *fdEvent)
 {
-	printf("close epfd:%d \n", fdEvent->epfd);
+	logPrintf("close epfd:%d", fdEvent->epfd);
 	close(fdEvent->epfd);
 }
 
@@ -46,7 +46,7 @@ int epollAddEvent(EP_LISTEN_T *fdEvent, int listenFd, cb_listenEvent cbFunc, voi
 	ret = epoll_ctl(fdEvent->epfd, EPOLL_CTL_ADD, listenFd, &event);
 	if (ret < 0)
 	{
-		printf("epoll_ctl errno:%d \n", errno);
+		logPrintf("epoll_ctl errno:%d", errno);
 		return -1;
 	}
 
@@ -57,11 +57,11 @@ int epollAddEvent(EP_LISTEN_T *fdEvent, int listenFd, cb_listenEvent cbFunc, voi
 		fdEvent->event[fdEvent->cnt].cbArg = cbArg;
 		fdEvent->cnt++;		
 
-		printf("add listenfd:%d to epfd:%d total:%d \n", listenFd, fdEvent->epfd, fdEvent->cnt);
+		logPrintf("add listenfd:%d to epfd:%d total:%d", listenFd, fdEvent->epfd, fdEvent->cnt);
 	}
 	else
 	{
-		printf("event full");
+		logPrintf("event full");
 		return -1;
 	}
 	
@@ -80,7 +80,7 @@ void epollListenLoop(EP_LISTEN_T *fdEvent)
 	while (1)
 	{
 		fds = epoll_wait(fdEvent->epfd, listenEvents, MAX_LISTEN, -1);
-		//printf("fds = %d\n", fds);
+		
 		for (i = 0; i < fds; i++)
 		{
 			for (j = 0; j < MAX_LISTEN; j++)
