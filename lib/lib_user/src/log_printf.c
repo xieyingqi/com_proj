@@ -1,3 +1,13 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stddef.h>
+#include <string.h>
+#include <unistd.h>
+#include <stdarg.h>
+#include <sys/time.h>
+#include <time.h>
+#include <syslog.h>
+
 #include "log_printf.h"
 
 static char appName[128];

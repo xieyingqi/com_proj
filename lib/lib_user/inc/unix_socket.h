@@ -1,16 +1,11 @@
 #ifndef _UNIX_SOCKET_H_
 #define _UNIX_SOCKET_H_
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stddef.h>
-#include <sys/socket.h>
 #include <sys/un.h>
-#include <unistd.h>
+#include <sys/socket.h>
 
 #include "epoll_user.h"
-#include "parse_cmd_para.h"
-#include "log_printf.h"
+#include "cmd_para_parse.h"
 
 #define SOCKET_PATH "/tmp/%s.unix"
 #define SOCKET_MAX 10

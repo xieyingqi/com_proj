@@ -1,4 +1,12 @@
-#include "parse_cmd_para.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stddef.h>
+#include <unistd.h>
+#include <getopt.h>
+
+#include "log_printf.h"
+#include "cmd_para_parse.h"
 
 /**
  * @brief 解析命令行参数

@@ -1,15 +1,5 @@
-#ifndef _CMD_PARSE_PARA_H_
-#define _CMD_PARSE_PARA_H_
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <stddef.h>
-#include <sys/socket.h>
-#include <sys/un.h>
-#include <unistd.h>
-#include <getopt.h>
-
-#include "log_printf.h"
+#ifndef _CMD_PARA_PARSE_H_
+#define _CMD_PARA_PARSE_H_
 
 enum PARA_TYPE_E
 {

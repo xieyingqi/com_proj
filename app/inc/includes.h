@@ -6,11 +6,12 @@
 #include <stddef.h>
 #include <fcntl.h>
 #include <sys/errno.h>
+#include <signal.h>
 
 #include "unix_socket.h"
 #include "epoll_user.h"
 #include "timer_user.h"
-#include "parse_cmd_para.h"
+#include "cmd_para_parse.h"
 #include "log_printf.h"
 
 #endif

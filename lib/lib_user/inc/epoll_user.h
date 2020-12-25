@@ -1,15 +1,8 @@
 #ifndef _EPOLL_USER_H_
 #define _EPOLL_USER_H_
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stddef.h>
-#include <string.h>
-#include <unistd.h>
 #include <sys/epoll.h>
 #include <sys/errno.h>
-
-#include "log_printf.h"
 
 #define MAX_LISTEN 10
 
