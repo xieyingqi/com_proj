@@ -16,7 +16,7 @@ LIB_USER_OBJ = $(patsubst %.c,$(BUILD_DIR)/%.o,$(notdir $(LIB_USER_SRC_FILE)))
 SRC_OBJ = $(patsubst %.c,$(BUILD_DIR)/%.o,$(notdir $(SRC_FILE)))
 
 CFLAGS = -Wall $(patsubst %,-I%,$(LIB_USER_INC_PATH)) $(patsubst %,-I%,$(INC_PATH))
-LDFLAGS = -lrt -lxml2
+LDFLAGS = -lrt -lxml2 -lsqlite3
 
 all: $(BIN_NAME)
 

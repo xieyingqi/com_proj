@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "xml_parse.h": "c",
+        "unistd.h": "c",
+        "includes.h": "c"
+    }
+}

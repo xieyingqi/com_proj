@@ -24,6 +24,21 @@ XML_NODE_PROP_T prop[] =
 	{"num", "158"},
 };
 
+DB_FILE_T dbFile = 
+{
+	.file = "test.db",
+	.db = NULL,
+};
+
+DB_TABLE_T dbTable = 
+{
+	.name = "student",
+	.member = "ID INTEGER"
+	"name TEXT"
+	"sex TEXT"
+	"age INTEGER"
+};
+
 void cbTimer1(sigval_t i)
 {
 	// IPC_MSG_T send_msg;
@@ -56,12 +71,16 @@ int main(int argc, char *argv[])
 	setIpcCallBack(&gIpc, cbSock);
 	
 	/* 创建或解析xml文件 */
-	if (openXmlFile(&xmlFile) < 0)
-	{
-		createXmlFile(&xmlFile, "root");
-		createNewNodeToParent(&xmlFile, "/root", "tel");
-		addXmlNodeProp(&xmlFile, "/root/tel", prop, sizeof(prop) / sizeof(XML_NODE_PROP_T));
-	}
+	// if (openXmlFile(&xmlFile) < 0)
+	// {
+	// 	createXmlFile(&xmlFile, "root");
+	// 	createNewNodeToParent(&xmlFile, "/root", "tel");
+	// 	addXmlNodeProp(&xmlFile, "/root/tel", prop, sizeof(prop) / sizeof(XML_NODE_PROP_T));
+	// }
+
+	/* 创建或解析数据库文件 */
+	// openDataBase(&dbFile);
+	// sql_create_table(&dbFile, dbTable);
 
 	/* 设定定时器 */
 	addTimer(&gTimer1, 1, cbTimer1);
