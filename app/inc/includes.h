@@ -13,5 +13,6 @@
 #include "timer_user.h"
 #include "cmd_para_parse.h"
 #include "log_printf.h"
+#include "xml_parse.h"
 
 #endif
